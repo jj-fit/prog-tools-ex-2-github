@@ -4,7 +4,6 @@ tasks = []
 
 def addTask(task):
     tasks.append(task)
-    saveTasks() # This function saves the added task onto the tasks.txt file
     print("Task added!")
 
 
@@ -21,15 +20,30 @@ def removeTask(tasknumber):
         print("Invalid Task Number.")
     else:
         tasks.pop(tasknumber - 1)
-        saveTasks() # This function saves the updated list of tasks on tasks.txt file
         print("Task removed!")
 
+
+
+# toDoApp.py
+
+tasks = []  
 
 def saveTasks():
     """Save tasks to tasks.txt file"""
     with open("tasks.txt", "w") as file:
         for task in tasks:
             file.write(task + "\n")
+
+
+def loadTasks():
+    """Load tasks from tasks.txt file"""
+    try:
+        with open("tasks.txt", "r") as file:
+            for line in file:
+                tasks.append(line.strip())
+    except FileNotFoundError:
+        # If file doesn't exist yet, ignore
+        pass
 
 
 def main():
