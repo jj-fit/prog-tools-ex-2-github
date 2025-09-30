@@ -4,6 +4,7 @@ tasks = []
 
 def addTask(task):
     tasks.append(task)
+    saveTasks() # This function saves the added task onto the tasks.txt file
     print("Task added!")
 
 
@@ -20,7 +21,15 @@ def removeTask(tasknumber):
         print("Invalid Task Number.")
     else:
         tasks.pop(tasknumber - 1)
+        saveTasks() # This function saves the updated list of tasks on tasks.txt file
         print("Task removed!")
+
+
+def saveTasks():
+    """Save tasks to tasks.txt file"""
+    with open("tasks.txt", "w") as file:
+        for task in tasks:
+            file.write(task + "\n")
 
 
 def main():
