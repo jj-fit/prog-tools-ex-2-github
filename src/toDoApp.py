@@ -1,42 +1,48 @@
 # toDoApp.py
 
-tasks=[]
+tasks = []  
 
-def addtask(task) :
+def addTask(task):
     tasks.append(task)
-    print("task added!")
+    print("Task added!")
 
-def showTasks( ):
-    if len(tasks)==0 :
-        print("no tasks yet")
+
+def showTasks():
+    if len(tasks) == 0:
+        print("No tasks yet")
     else:
-        for i in range (len(tasks)):
-             print(i+1,".",tasks[i])
+        for i in range(len(tasks)):
+            print(i + 1, ".", tasks[i])
 
-def removetask(tasknumber):
+
+def removeTask(tasknumber):
     if tasknumber < 1 or tasknumber > len(tasks):
-      print("Invalid Task Number.")
+        print("Invalid Task Number.")
     else:
-      tasks.pop(tasknumber - 1)
-      print("task removed!!")
+        tasks.pop(tasknumber - 1)
+        print("Task removed!")
+
 
 def main():
     while True:
-        print("1 Add Task")
-        print("2.Show Tasks")
-        print("3.Remove Task")
-        print("4- Exit")
-        ch = input("enter choice : ")
-        if ch=="1":
-            t = input("enter task : ")
-            addtask(t)
-        elif ch=="2":
+        print("1. Add Task")
+        print("2. Show Tasks")
+        print("3. Remove Task")
+        print("4. Exit")
+        ch = input("Enter choice : ")
+
+        if ch == "1":
+            t = input("Enter task : ")
+            addTask(t)
+        elif ch == "2":
             showTasks()
-        elif ch=="3":
-            n=int(input("enter task no to remove: "))
-            removetask(n)
-        elif ch=="4":
-            break;
+        elif ch == "3":
+            n = int(input("Enter task # to remove: "))
+            removeTask(n)
+        elif ch == "4":
+            break
         else:
-            print("wrong choice!!")
+            print("Wrong choice!")
+
+
 main()
