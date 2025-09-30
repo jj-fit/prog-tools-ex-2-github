@@ -47,6 +47,8 @@ def loadTasks():
 
 
 def main():
+    loadTasks() # initialize the loadTask function to display saved tasks on the file
+
     while True:
         print("1. Add Task")
         print("2. Show Tasks")
