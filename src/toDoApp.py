@@ -40,6 +40,43 @@ def loadTasks():
         pass
 
 
+def exportTasks(): # Define export task function to be able to export the updated tasks.txt file
+    """Export tasks to a custom file"""
+    filename = input("Enter filename to export to: ")
+    if not filename.endswith(".txt"):
+        filename += ".txt"
+    
+    try:
+        with open(filename, "w") as file:
+            for task in tasks:
+                file.write(task + "\n")
+        print(f"Tasks exported to {filename}")
+    except Exception as e:
+        print(f"Error exporting tasks: {e}")
+
+
+def importTasks(): # Define import task function to be able to upload exisiting .txt file
+    """Import tasks from a custom file"""
+    filename = input("Enter filename to import from: ")
+    if not filename.endswith(".txt"):
+        filename += ".txt"
+
+    try:
+        with open(filename, "r") as file:
+            imported_count = 0
+            for line in file:
+                task = line.strip()
+                if task:  # Only add non-empty lines
+                    tasks.append(task)
+                    imported_count += 1
+        saveTasks()  # Save the updated tasks list
+        print(f"Imported {imported_count} tasks from {filename}")
+    except FileNotFoundError:
+        print(f"File {filename} not found!")
+    except Exception as e:
+        print(f"Error importing tasks: {e}")
+
+
 def main():
     loadTasks() # initialize the loadTask function to display saved tasks on the file
 
@@ -62,7 +99,11 @@ def main():
             removeTask(n)
             saveTasks()
         elif ch == "4":
-            break
+            exportTasks()
+        elif ch == "5":
+            importTasks()
+        elif ch == "6":
+             break
         else:
             print("Wrong choice!")
 
