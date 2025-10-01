@@ -1,35 +1,39 @@
 # toDoApp.py
 
-tasks = []  
+tasks = []
+
 
 def addTask(task):
+    """Add a new task to the list"""
     tasks.append(task)
     print("Task added!")
 
 
 def showTasks():
+    """Display all tasks"""
     if len(tasks) == 0:
         print("No tasks yet")
     else:
-        for i in range(len(tasks)):
-            print(i + 1, ".", tasks[i])
+        print("\nCurrent Tasks:")
+        for i, task in enumerate(tasks, 1):
+            print(f"{i}. {task}")
 
 
 def removeTask(tasknumber):
+    """Remove a task by its number"""
     if tasknumber < 1 or tasknumber > len(tasks):
         print("Invalid Task Number.")
     else:
-        tasks.pop(tasknumber - 1)
-        print("Task removed!")
+        removed = tasks.pop(tasknumber - 1)
+        print(f"Task removed: {removed}")
 
 
 def clearAllTasks():
-    """
-    Clear all tasks after user confirmation.
-    """
+    """Clear all tasks after user confirmation"""
     if len(tasks) == 0:
         print("No tasks to clear.")
         return
+
     answer = input("Are you sure you want to CLEAR ALL tasks? Type 'yes' to confirm: ").strip().lower()
     if answer == "yes":
         tasks.clear()
@@ -45,7 +49,7 @@ def searchTasks(keyword):
     if found:
         print("\nSearch results:")
         for i, task in enumerate(found, 1):
-            print(i, ".", task)
+            print(f"{i}. {task}")
     else:
         print("No matching tasks found.")
 
@@ -68,12 +72,12 @@ def loadTasks():
         pass
 
 
-def exportTasks(): # Define export task function to be able to export the updated tasks.txt file
+def exportTasks():
     """Export tasks to a custom file"""
-    filename = input("Enter filename to export to: ")
+    filename = input("Enter filename to export to: ").strip()
     if not filename.endswith(".txt"):
         filename += ".txt"
-    
+
     try:
         with open(filename, "w") as file:
             for task in tasks:
@@ -83,9 +87,9 @@ def exportTasks(): # Define export task function to be able to export the update
         print(f"Error exporting tasks: {e}")
 
 
-def importTasks(): # Define import task function to be able to upload exisiting .txt file
+def importTasks():
     """Import tasks from a custom file"""
-    filename = input("Enter filename to import from: ")
+    filename = input("Enter filename to import from: ").strip()
     if not filename.endswith(".txt"):
         filename += ".txt"
 
@@ -97,7 +101,7 @@ def importTasks(): # Define import task function to be able to upload exisiting 
                 if task:  # Only add non-empty lines
                     tasks.append(task)
                     imported_count += 1
-        saveTasks()  # Save the updated tasks list
+        saveTasks()
         print(f"Imported {imported_count} tasks from {filename}")
     except FileNotFoundError:
         print(f"File {filename} not found!")
@@ -109,6 +113,7 @@ def main():
     loadTasks()  # Load saved tasks at startup
 
     while True:
+        print("\n--- To-Do App ---")
         print("1. Add Task")
         print("2. Show Tasks")
         print("3. Remove Task")
@@ -117,40 +122,48 @@ def main():
         print("6. Export Tasks")
         print("7. Import Tasks")
         print("8. Exit")
-        ch = input("Enter choice: ")
 
-        if ch == "1":
-            t = input("Enter task: ")
-            addTask(t)
-            saveTasks()
+        choice = input("Enter choice: ").strip()
 
-        elif ch == "2":
-            showTasks()  # no need to save here
+        if choice == "1":
+            task = input("Enter task: ").strip()
+            if task:
+                addTask(task)
+                saveTasks()
+            else:
+                print("Task cannot be empty.")
 
-        elif ch == "3":
-            n = int(input("Enter task # to remove: "))
-            removeTask(n)
-            saveTasks()
+        elif choice == "2":
+            showTasks()
 
-        elif ch == "4":
-            clearAllTasks()
-            saveTasks()
-        
-        elif ch == "5":
-            keyword = input("Enter keyword to search: ")
+        elif choice == "3":
+            try:
+                num = int(input("Enter task # to remove: ").strip())
+                removeTask(num)
+                saveTasks()
+            except ValueError:
+                print("Invalid input. Please enter a number.")
+
+        elif choice == "4":
+            clearAllTasks()  # already saves inside the function
+
+        elif choice == "5":
+            keyword = input("Enter keyword to search: ").strip()
             searchTasks(keyword)
 
-        elif ch == "6":
+        elif choice == "6":
             exportTasks()
 
-        elif ch == "7":
+        elif choice == "7":
             importTasks()
 
-        elif ch == "8":
+        elif choice == "8":
             print("Goodbye!")
             break
 
         else:
-            print("Wrong choice!")
+            print("Wrong choice! Please enter a number from 1-8.")
 
-main()
+
+if __name__ == "__main__":
+    main()
