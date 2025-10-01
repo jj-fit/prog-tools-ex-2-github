@@ -22,12 +22,6 @@ def removeTask(tasknumber):
         tasks.pop(tasknumber - 1)
         print("Task removed!")
 
-
-
-# toDoApp.py
-
-tasks = []  
-
 def saveTasks():
     """Save tasks to tasks.txt file"""
     with open("tasks.txt", "w") as file:
