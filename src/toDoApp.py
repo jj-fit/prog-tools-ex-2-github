@@ -2,8 +2,8 @@
 
 tasks = []  
 
-def addTask(task):
-    tasks.append(task)
+def addTask(task, priority="Medium"):
+    tasks.append({"task": task, "priority": priority})
     print("Task added!")
 
 
@@ -12,7 +12,8 @@ def showTasks():
         print("No tasks yet")
     else:
         for i in range(len(tasks)):
-            print(i + 1, ".", tasks[i])
+            task = tasks[i]
+            print(f"{i + 1}. {task['task']} [{task['priority']}]")
 
 
 def removeTask(tasknumber):
@@ -21,6 +22,16 @@ def removeTask(tasknumber):
     else:
         tasks.pop(tasknumber - 1)
         print("Task removed!")
+
+
+def get_valid_priority():
+    """Helper function to get valid priority input"""
+    while True:
+        priority = input("Enter priority (High/Medium/Low): ").strip().capitalize()
+        if priority in ["High", "Medium", "Low"]:
+            return priority
+        else:
+            print("Invalid priority! Please enter High, Medium, or Low.")
 
 
 def main():
@@ -33,7 +44,8 @@ def main():
 
         if ch == "1":
             t = input("Enter task : ")
-            addTask(t)
+            priority = get_valid_priority()
+            addTask(t, priority)
         elif ch == "2":
             showTasks()
         elif ch == "3":
