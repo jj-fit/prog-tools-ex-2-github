@@ -76,36 +76,42 @@ def importTasks(): # Define import task function to be able to upload exisiting 
     except Exception as e:
         print(f"Error importing tasks: {e}")
 
-
 def main():
-    loadTasks() # initialize the loadTask function to display saved tasks on the file
+    loadTasks()  # Load saved tasks at startup
 
     while True:
         print("1. Add Task")
         print("2. Show Tasks")
         print("3. Remove Task")
-        print("4. Exit")
-        ch = input("Enter choice : ")
+        print("4. Export Tasks")
+        print("5. Import Tasks")
+        print("6. Exit")
+        ch = input("Enter choice: ")
 
         if ch == "1":
-            t = input("Enter task : ")
+            t = input("Enter task: ")
             addTask(t)
             saveTasks()
+
         elif ch == "2":
-            showTasks()
-            saveTasks()
+            showTasks()  # no need to save here
+
         elif ch == "3":
             n = int(input("Enter task # to remove: "))
             removeTask(n)
             saveTasks()
+
         elif ch == "4":
             exportTasks()
+
         elif ch == "5":
             importTasks()
+
         elif ch == "6":
-             break
+            print("Goodbye!")
+            break
+
         else:
             print("Wrong choice!")
-
 
 main()
