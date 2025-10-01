@@ -22,6 +22,23 @@ def removeTask(tasknumber):
         tasks.pop(tasknumber - 1)
         print("Task removed!")
 
+
+def clearAllTasks():
+    """
+    Clear all tasks after user confirmation.
+    """
+    if len(tasks) == 0:
+        print("No tasks to clear.")
+        return
+    answer = input("Are you sure you want to CLEAR ALL tasks? Type 'yes' to confirm: ").strip().lower()
+    if answer == "yes":
+        tasks.clear()
+        saveTasks()
+        print("All tasks cleared.")
+    else:
+        print("Clear cancelled.")
+
+
 def saveTasks():
     """Save tasks to tasks.txt file"""
     with open("tasks.txt", "w") as file:
@@ -76,6 +93,7 @@ def importTasks(): # Define import task function to be able to upload exisiting 
     except Exception as e:
         print(f"Error importing tasks: {e}")
 
+
 def main():
     loadTasks()  # Load saved tasks at startup
 
@@ -83,9 +101,10 @@ def main():
         print("1. Add Task")
         print("2. Show Tasks")
         print("3. Remove Task")
-        print("4. Export Tasks")
-        print("5. Import Tasks")
-        print("6. Exit")
+        print("4. Clear All Tasks")
+        print("5. Export Tasks")
+        print("6. Import Tasks")
+        print("7. Exit")
         ch = input("Enter choice: ")
 
         if ch == "1":
@@ -102,12 +121,16 @@ def main():
             saveTasks()
 
         elif ch == "4":
-            exportTasks()
+            clearAllTasks()
+            saveTasks()
 
         elif ch == "5":
-            importTasks()
+            exportTasks()
 
         elif ch == "6":
+            importTasks()
+
+        elif ch == "7":
             print("Goodbye!")
             break
 
