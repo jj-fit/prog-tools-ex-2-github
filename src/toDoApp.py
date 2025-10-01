@@ -53,11 +53,14 @@ def main():
         if ch == "1":
             t = input("Enter task : ")
             addTask(t)
+            saveTasks()
         elif ch == "2":
             showTasks()
+            saveTasks()
         elif ch == "3":
             n = int(input("Enter task # to remove: "))
             removeTask(n)
+            saveTasks()
         elif ch == "4":
             break
         else:
