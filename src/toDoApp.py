@@ -1,5 +1,4 @@
 # toDoApp.py
-
 tasks = []  
 completed = []
 
@@ -36,12 +35,11 @@ def removeTask(tasknumber):
 
 
 def clearAllTasks():
-    """
-    Clear all tasks after user confirmation.
-    """
+    """Clear all tasks after user confirmation"""
     if len(tasks) == 0:
         print("No tasks to clear.\n\n")
         return
+
     answer = input("Are you sure you want to CLEAR ALL tasks? Type 'yes' to confirm: ").strip().lower()
     if answer == "yes":
         tasks.clear()
@@ -83,12 +81,12 @@ def loadTasks():
         pass
 
 
-def exportTasks(): # Define export task function to be able to export the updated tasks.txt file
+def exportTasks():
     """Export tasks to a custom file"""
-    filename = input("Enter filename to export to: ")
+    filename = input("Enter filename to export to: ").strip()
     if not filename.endswith(".txt"):
         filename += ".txt"
-    
+
     try:
         with open(filename, "w") as file:
             for task in tasks:
@@ -98,9 +96,9 @@ def exportTasks(): # Define export task function to be able to export the update
         print(f"Error exporting tasks: {e}\n")
 
 
-def importTasks(): # Define import task function to be able to upload exisiting .txt file
+def importTasks():
     """Import tasks from a custom file"""
-    filename = input("Enter filename to import from: ")
+    filename = input("Enter filename to import from: ").strip()
     if not filename.endswith(".txt"):
         filename += ".txt"
 
@@ -138,41 +136,43 @@ def main():
         print(" [7] Import Tasks")
         print(" [8] Exit")
         print("-------------------------------")
-        ch = input("Enter choice: ")
+        choice = input("Enter choice: ")
 
-        if ch == "1":
+        if choice == "1":
             t = input("Enter task: ")
             addTask(t)
             saveTasks()
 
-        elif ch == "2":
+        elif choice == "2":
             showTasks()  # no need to save here
 
-        elif ch == "3":
+        elif choice == "3":
             showTasks() # Show tasks before asking which to remove
             n = int(input("Enter task # to remove: "))
             removeTask(n)
             saveTasks()
 
-        elif ch == "4":
+        elif choice == "4":
             clearAllTasks()
             saveTasks()
         
-        elif ch == "5":
+        elif choice == "5":
             keyword = input("Enter keyword to search: ")
+
             searchTasks(keyword)
 
-        elif ch == "6":
+        elif choice == "6":
             exportTasks()
 
-        elif ch == "7":
+        elif choice == "7":
             importTasks()
 
-        elif ch == "8":
-            print("Exiting... Goodbye!\n\n")
+        elif choice == "8":
+            print("Goodbye!")
             break
 
         else:
-            print("Invalid choice. Try again.\n\n")
+            print("Wrong choice! Please enter a number from 1-8.")
 
-main()
+if __name__ == "__main__":
+    main()
