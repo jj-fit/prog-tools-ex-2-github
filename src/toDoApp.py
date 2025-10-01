@@ -39,6 +39,17 @@ def clearAllTasks():
         print("Clear cancelled.")
 
 
+def searchTasks(keyword):
+    """Search tasks by keyword and display matches"""
+    found = [task for task in tasks if keyword.lower() in task.lower()]
+    if found:
+        print("\nSearch results:")
+        for i, task in enumerate(found, 1):
+            print(i, ".", task)
+    else:
+        print("No matching tasks found.")
+
+
 def saveTasks():
     """Save tasks to tasks.txt file"""
     with open("tasks.txt", "w") as file:
@@ -102,9 +113,10 @@ def main():
         print("2. Show Tasks")
         print("3. Remove Task")
         print("4. Clear All Tasks")
-        print("5. Export Tasks")
-        print("6. Import Tasks")
-        print("7. Exit")
+        print("5. Search Tasks")
+        print("6. Export Tasks")
+        print("7. Import Tasks")
+        print("8. Exit")
         ch = input("Enter choice: ")
 
         if ch == "1":
@@ -123,14 +135,18 @@ def main():
         elif ch == "4":
             clearAllTasks()
             saveTasks()
-
+        
         elif ch == "5":
-            exportTasks()
+            keyword = input("Enter keyword to search: ")
+            searchTasks(keyword)
 
         elif ch == "6":
-            importTasks()
+            exportTasks()
 
         elif ch == "7":
+            importTasks()
+
+        elif ch == "8":
             print("Goodbye!")
             break
 
