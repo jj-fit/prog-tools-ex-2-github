@@ -1,9 +1,35 @@
-# toDoApp.py
+"""
+toDoApp.py
+-----------
+
+A simple command-line To-Do application in Python that allows users to:
+- Add tasks with priorities (High, Medium, Low)
+- View all tasks
+- Remove tasks
+- Clear all tasks
+- Search tasks by keyword
+- Save and load tasks from file
+- Import and export tasks to custom files
+
+Author: [Your Name]
+"""
+
 tasks = []  
-completed = []
+completed = []  # Placeholder for future "mark as complete" feature
+
 
 def addTask(task, priority="Medium"):
-    """Add a new task to the list with priority"""
+    """
+    Add a new task to the list.
+
+    Args:
+        task (str): The description of the task.
+        priority (str, optional): The priority of the task. 
+            Can be 'High', 'Medium', or 'Low'. Defaults to "Medium".
+
+    Returns:
+        None
+    """
     tasks.append({"task": task, "priority": priority})
     print("-------------------------------")
     print("           Task added!")
@@ -11,7 +37,12 @@ def addTask(task, priority="Medium"):
 
 
 def showTasks():
-    """Display all tasks with priorities"""
+    """
+    Display all tasks with their assigned priorities.
+
+    Returns:
+        None
+    """
     if len(tasks) == 0:
         print("No tasks yet. Try adding some!\n\n")
     else:
@@ -26,7 +57,15 @@ def showTasks():
 
 
 def removeTask(tasknumber):
-    """Remove a task by its number"""
+    """
+    Remove a task by its number in the list.
+
+    Args:
+        tasknumber (int): The index of the task (1-based).
+
+    Returns:
+        None
+    """
     if tasknumber < 1 or tasknumber > len(tasks):
         print("Invalid Task Number.\n\n")
     else:
@@ -37,7 +76,12 @@ def removeTask(tasknumber):
 
 
 def clearAllTasks():
-    """Clear all tasks after user confirmation"""
+    """
+    Clear all tasks from the list after user confirmation.
+
+    Returns:
+        None
+    """
     if len(tasks) == 0:
         print("No tasks to clear.\n\n")
         return
@@ -52,7 +96,15 @@ def clearAllTasks():
 
 
 def searchTasks(keyword):
-    """Search tasks by keyword and display matches with priorities"""
+    """
+    Search for tasks that contain a given keyword.
+
+    Args:
+        keyword (str): The search keyword.
+
+    Returns:
+        None
+    """
     found = [task for task in tasks if keyword.lower() in task['task'].lower()]
     if found:
         print("\n===============================")
@@ -67,14 +119,31 @@ def searchTasks(keyword):
 
 
 def saveTasks():
-    """Save tasks to tasks.txt file with priorities"""
+    """
+    Save tasks to a file (tasks.txt).
+
+    Each line is stored as:
+        task|priority
+
+    Returns:
+        None
+    """
     with open("tasks.txt", "w") as file:
         for task_item in tasks:
             file.write(f"{task_item['task']}|{task_item['priority']}\n")
 
 
 def loadTasks():
-    """Load tasks from tasks.txt file with priorities"""
+    """
+    Load tasks from a file (tasks.txt).
+
+    Handles both formats:
+        - "task|priority"
+        - "task" (defaults to Medium priority)
+
+    Returns:
+        None
+    """
     try:
         with open("tasks.txt", "r") as file:
             for line in file:
@@ -83,15 +152,21 @@ def loadTasks():
                     task, priority = parts
                     tasks.append({"task": task, "priority": priority})
                 elif len(parts) == 1:
-                    # Handle old format without priorities
                     tasks.append({"task": parts[0], "priority": "Medium"})
     except FileNotFoundError:
-        # If file doesn't exist yet, ignore
         pass
 
 
 def exportTasks():
-    """Export tasks to a custom file with priorities"""
+    """
+    Export tasks to a user-specified file.
+
+    Prompts the user for a filename and writes tasks in the format:
+        task|priority
+
+    Returns:
+        None
+    """
     filename = input("Enter filename to export to: ").strip()
     if not filename.endswith(".txt"):
         filename += ".txt"
@@ -106,7 +181,18 @@ def exportTasks():
 
 
 def importTasks():
-    """Import tasks from a custom file with priorities"""
+    """
+    Import tasks from a user-specified file.
+
+    Prompts the user for a filename and imports tasks. Supports both:
+        - "task|priority"
+        - "task" (defaults to Medium)
+
+    Updates the tasks list and saves it.
+
+    Returns:
+        None
+    """
     filename = input("Enter filename to import from: ").strip()
     if not filename.endswith(".txt"):
         filename += ".txt"
@@ -118,14 +204,13 @@ def importTasks():
                 parts = line.strip().split('|')
                 if len(parts) == 2:
                     task, priority = parts
-                    if task:  # Only add non-empty lines
+                    if task:
                         tasks.append({"task": task, "priority": priority})
                         imported_count += 1
                 elif len(parts) == 1 and parts[0]:
-                    # Handle files without priorities
                     tasks.append({"task": parts[0], "priority": "Medium"})
                     imported_count += 1
-        saveTasks()  # Save the updated tasks list
+        saveTasks()
         print(f"Imported {imported_count} tasks from {filename}\n")
     except FileNotFoundError:
         print(f"File {filename} not found!\n")
@@ -134,7 +219,12 @@ def importTasks():
 
 
 def getPriorityInput():
-    """Get priority input from user with validation"""
+    """
+    Prompt the user to select a task priority.
+
+    Returns:
+        str: "High", "Medium", or "Low"
+    """
     while True:
         print("Priority options: [1] High, [2] Medium, [3] Low")
         priority_choice = input("Enter priority (1-3, default 2): ").strip()
@@ -150,7 +240,25 @@ def getPriorityInput():
 
 
 def main():
-    loadTasks()  # Load saved tasks at startup
+    """
+    Main program loop.
+
+    Displays a menu with options:
+        1. Add Task
+        2. Show Tasks
+        3. Remove Task
+        4. Clear All Tasks
+        5. Search Tasks
+        6. Export Tasks
+        7. Import Tasks
+        8. Exit
+
+    Runs until the user chooses to exit.
+
+    Returns:
+        None
+    """
+    loadTasks()
 
     while True:
         print("\n===============================")
@@ -158,7 +266,6 @@ def main():
         print("===============================")
         print(f"  Total Tasks: {len(tasks)}")
         
-        # Count tasks by priority
         high_priority = len([t for t in tasks if t['priority'] == 'High'])
         medium_priority = len([t for t in tasks if t['priority'] == 'Medium'])
         low_priority = len([t for t in tasks if t['priority'] == 'Low'])
@@ -185,10 +292,10 @@ def main():
             saveTasks()
 
         elif choice == "2":
-            showTasks()  # no need to save here
+            showTasks()
 
         elif choice == "3":
-            showTasks() # Show tasks before asking which to remove
+            showTasks()
             n = int(input("Enter task # to remove: "))
             removeTask(n)
             saveTasks()
@@ -213,6 +320,7 @@ def main():
 
         else:
             print("Wrong choice! Please enter a number from 1-8.")
+
 
 if __name__ == "__main__":
     main()
