@@ -2,16 +2,16 @@
 tasks = []  
 completed = []
 
-def addTask(task):
-    """Add a new task to the list"""
-    tasks.append(task)
+def addTask(task, priority="Medium"):
+    """Add a new task to the list with priority"""
+    tasks.append({"task": task, "priority": priority})
     print("-------------------------------")
     print("           Task added!")
     print("-------------------------------\n")
 
 
 def showTasks():
-    """Display all tasks"""
+    """Display all tasks with priorities"""
     if len(tasks) == 0:
         print("No tasks yet. Try adding some!\n\n")
     else:
@@ -19,7 +19,9 @@ def showTasks():
         print("Your Tasks:")
         print("-------------------------------")
         for i in range(len(tasks)):
-            print(f"{i + 1}. {tasks[i]}")
+            task_item = tasks[i]
+            priority_display = f"[{task_item['priority']}]"
+            print(f"{i + 1}. {priority_display} {task_item['task']}")
         print("-------------------------------\n")
 
 
@@ -50,54 +52,61 @@ def clearAllTasks():
 
 
 def searchTasks(keyword):
-    """Search tasks by keyword and display matches"""
-    found = [task for task in tasks if keyword.lower() in task.lower()]
+    """Search tasks by keyword and display matches with priorities"""
+    found = [task for task in tasks if keyword.lower() in task['task'].lower()]
     if found:
         print("\n===============================")
         print(" Search results:")
         print("-------------------------------")
-        for i, task in enumerate(found, 1):
-            print("-", task)
+        for i, task_item in enumerate(found, 1):
+            priority_display = f"[{task_item['priority']}]"
+            print(f"- {priority_display} {task_item['task']}")
         print("-------------------------------\n")
     else:
         print("No matching tasks found.\n\n")
 
 
 def saveTasks():
-    """Save tasks to tasks.txt file"""
+    """Save tasks to tasks.txt file with priorities"""
     with open("tasks.txt", "w") as file:
-        for task in tasks:
-            file.write(task + "\n")
+        for task_item in tasks:
+            file.write(f"{task_item['task']}|{task_item['priority']}\n")
 
 
 def loadTasks():
-    """Load tasks from tasks.txt file"""
+    """Load tasks from tasks.txt file with priorities"""
     try:
         with open("tasks.txt", "r") as file:
             for line in file:
-                tasks.append(line.strip())
+                parts = line.strip().split('|')
+                if len(parts) == 2:
+                    task, priority = parts
+                    tasks.append({"task": task, "priority": priority})
+                elif len(parts) == 1:
+                    # Handle old format without priorities
+                    tasks.append({"task": parts[0], "priority": "Medium"})
     except FileNotFoundError:
         # If file doesn't exist yet, ignore
         pass
 
 
 def exportTasks():
-    """Export tasks to a custom file"""
+    """Export tasks to a custom file with priorities"""
     filename = input("Enter filename to export to: ").strip()
     if not filename.endswith(".txt"):
         filename += ".txt"
 
     try:
         with open(filename, "w") as file:
-            for task in tasks:
-                file.write(task + "\n")
+            for task_item in tasks:
+                file.write(f"{task_item['task']}|{task_item['priority']}\n")
         print(f"Tasks exported to {filename}\n")
     except Exception as e:
         print(f"Error exporting tasks: {e}\n")
 
 
 def importTasks():
-    """Import tasks from a custom file"""
+    """Import tasks from a custom file with priorities"""
     filename = input("Enter filename to import from: ").strip()
     if not filename.endswith(".txt"):
         filename += ".txt"
@@ -106,9 +115,15 @@ def importTasks():
         with open(filename, "r") as file:
             imported_count = 0
             for line in file:
-                task = line.strip()
-                if task:  # Only add non-empty lines
-                    tasks.append(task)
+                parts = line.strip().split('|')
+                if len(parts) == 2:
+                    task, priority = parts
+                    if task:  # Only add non-empty lines
+                        tasks.append({"task": task, "priority": priority})
+                        imported_count += 1
+                elif len(parts) == 1 and parts[0]:
+                    # Handle files without priorities
+                    tasks.append({"task": parts[0], "priority": "Medium"})
                     imported_count += 1
         saveTasks()  # Save the updated tasks list
         print(f"Imported {imported_count} tasks from {filename}\n")
@@ -116,6 +131,22 @@ def importTasks():
         print(f"File {filename} not found!\n")
     except Exception as e:
         print(f"Error importing tasks: {e}\n")
+
+
+def getPriorityInput():
+    """Get priority input from user with validation"""
+    while True:
+        print("Priority options: [1] High, [2] Medium, [3] Low")
+        priority_choice = input("Enter priority (1-3, default 2): ").strip()
+        
+        if priority_choice == "1" or priority_choice.lower() == "high":
+            return "High"
+        elif priority_choice == "2" or priority_choice.lower() == "medium" or priority_choice == "":
+            return "Medium"
+        elif priority_choice == "3" or priority_choice.lower() == "low":
+            return "Low"
+        else:
+            print("Invalid priority choice. Please enter 1, 2, or 3.")
 
 
 def main():
@@ -126,6 +157,15 @@ def main():
         print("           TO DO APP")
         print("===============================")
         print(f"  Total Tasks: {len(tasks)}")
+        
+        # Count tasks by priority
+        high_priority = len([t for t in tasks if t['priority'] == 'High'])
+        medium_priority = len([t for t in tasks if t['priority'] == 'Medium'])
+        low_priority = len([t for t in tasks if t['priority'] == 'Low'])
+        
+        print(f"  High Priority: {high_priority}")
+        print(f"  Medium Priority: {medium_priority}")
+        print(f"  Low Priority: {low_priority}")
         print("-------------------------------")
         print(" [1] Add Task")
         print(" [2] Show Tasks")
@@ -140,7 +180,8 @@ def main():
 
         if choice == "1":
             t = input("Enter task: ")
-            addTask(t)
+            priority = getPriorityInput()
+            addTask(t, priority)
             saveTasks()
 
         elif choice == "2":
@@ -158,7 +199,6 @@ def main():
         
         elif choice == "5":
             keyword = input("Enter keyword to search: ")
-
             searchTasks(keyword)
 
         elif choice == "6":
