@@ -10,18 +10,36 @@ def addTask(task, priority="Medium"):
     print("-------------------------------\n")
 
 
-def showTasks():
-    """Display all tasks with priorities"""
-    if len(tasks) == 0:
+def showTasks(task_list=None, title="Your Tasks:"):
+    """Display tasks with priorities"""
+    if task_list is None:
+        task_list = tasks
+    
+    if len(task_list) == 0:
         print("No tasks yet. Try adding some!\n\n")
     else:
         print("\n===============================")
-        print("Your Tasks:")
+        print(title)
         print("-------------------------------")
-        for i in range(len(tasks)):
-            task_item = tasks[i]
+        for i in range(len(task_list)):
+            task_item = task_list[i]
             priority_display = f"[{task_item['priority']}]"
             print(f"{i + 1}. {priority_display} {task_item['task']}")
+        print("-------------------------------\n")
+
+
+def showCompletedTasks():
+    """Display all completed tasks"""
+    if len(completed) == 0:
+        print("No completed tasks yet.\n\n")
+    else:
+        print("\n===============================")
+        print("Completed Tasks:")
+        print("-------------------------------")
+        for i in range(len(completed)):
+            task_item = completed[i]
+            priority_display = f"[{task_item['priority']}]"
+            print(f"{i + 1}. [X] {priority_display} {task_item['task']}")
         print("-------------------------------\n")
 
 
@@ -80,19 +98,40 @@ def markTaskCompleted(tasknumber):
         print("-------------------------------")
 
 
-def showCompletedTasks():
-    """Display all completed tasks"""
-    if len(completed) == 0:
-        print("No completed tasks yet.\n\n")
+def sortTasks():
+    """Sort tasks by priority"""
+    if len(tasks) == 0:
+        print("No tasks to sort.\n\n")
+        return
+    
+    print("\n-------------------------------")
+    print("     Sort Tasks By:")
+    print("-------------------------------")
+    print(" [1] Priority (High to Low)")
+    print(" [2] Priority (Low to High)")
+    print(" [3] Cancel")
+    print("-------------------------------")
+    
+    sort_choice = input("Enter choice: ").strip()
+    
+    if sort_choice == "1":
+        # Sort by priority: High > Medium > Low
+        priority_order = {"High": 1, "Medium": 2, "Low": 3}
+        tasks.sort(key=lambda x: priority_order[x['priority']])
+        saveTasks()
+        print("Tasks sorted by priority (High to Low)!")
+        showTasks()
+    elif sort_choice == "2":
+        # Sort by priority: Low > Medium > High
+        priority_order = {"High": 3, "Medium": 2, "Low": 1}
+        tasks.sort(key=lambda x: priority_order[x['priority']])
+        saveTasks()
+        print("Tasks sorted by priority (Low to High)!")
+        showTasks()
+    elif sort_choice == "3":
+        print("Sort cancelled.\n\n")
     else:
-        print("\n===============================")
-        print("Completed Tasks:")
-        print("-------------------------------")
-        for i in range(len(completed)):
-            task_item = completed[i]
-            priority_display = f"[{task_item['priority']}]"
-            print(f"{i + 1}. [X] {priority_display} {task_item['task']}")
-        print("-------------------------------\n")
+        print("Invalid choice!\n\n")
 
 
 def saveTasks():
@@ -222,10 +261,11 @@ def main():
         print(" [3] Remove Task")
         print(" [4] Mark Task as Completed")
         print(" [5] Show Completed Tasks")
-        print(" [6] Clear All Tasks")
-        print(" [7] Search Tasks")
-        print(" [8] Export Tasks")
-        print(" [9] Import Tasks")
+        print(" [6] Sort Tasks")
+        print(" [7] Clear All Tasks")
+        print(" [8] Search Tasks")
+        print(" [9] Export Tasks")
+        print(" [10] Import Tasks")
         print(" [0] Exit")
         print("-------------------------------")
         choice = input("Enter choice: ")
@@ -237,34 +277,38 @@ def main():
             saveTasks()
 
         elif choice == "2":
-            showTasks()  # no need to save here
+            showTasks()
 
         elif choice == "3":
-            showTasks() # Show tasks before asking which to remove
-            n = int(input("Enter task # to remove: "))
-            removeTask(n)
-            saveTasks()
+            showTasks()
+            if tasks:  # Only ask for task number if there are tasks
+                n = int(input("Enter task # to remove: "))
+                removeTask(n)
+                saveTasks()
 
         elif choice == "4":
-            showTasks() # Show tasks before asking which to mark as completed
-            n = int(input("Enter task # to mark as completed: "))
-            markTaskCompleted(n)
+            showTasks()
+            if tasks:  # Only ask for task number if there are tasks
+                n = int(input("Enter task # to mark as completed: "))
+                markTaskCompleted(n)
 
         elif choice == "5":
             showCompletedTasks()
 
         elif choice == "6":
-            clearAllTasks()
-            saveTasks()
-        
+            sortTasks()
+
         elif choice == "7":
+            clearAllTasks()
+        
+        elif choice == "8":
             keyword = input("Enter keyword to search: ")
             searchTasks(keyword)
 
-        elif choice == "8":
+        elif choice == "9":
             exportTasks()
 
-        elif choice == "9":
+        elif choice == "10":
             importTasks()
 
         elif choice == "0":
@@ -272,7 +316,7 @@ def main():
             break
 
         else:
-            print("Wrong choice! Please enter a number from 0-9.")
+            print("Wrong choice! Please enter a number from 0-10.")
 
 if __name__ == "__main__":
     main()
