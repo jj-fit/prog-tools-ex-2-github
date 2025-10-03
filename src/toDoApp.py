@@ -118,6 +118,35 @@ def searchTasks(keyword):
         print("No matching tasks found.\n\n")
 
 
+def markTaskCompleted(tasknumber):
+    """Mark a task as completed by its number"""
+    if tasknumber < 1 or tasknumber > len(tasks):
+        print("Invalid Task Number.\n\n")
+    else:
+        # Move task from tasks to completed
+        completed_task = tasks.pop(tasknumber - 1)
+        completed.append(completed_task)
+        saveTasks()
+        print("-------------------------------")
+        print("      Task marked as done!")
+        print("-------------------------------")
+
+
+def showCompletedTasks():
+    """Display all completed tasks"""
+    if len(completed) == 0:
+        print("No completed tasks yet.\n\n")
+    else:
+        print("\n===============================")
+        print("Completed Tasks:")
+        print("-------------------------------")
+        for i in range(len(completed)):
+            task_item = completed[i]
+            priority_display = f"[{task_item['priority']}]"
+            print(f"{i + 1}. [X] {priority_display} {task_item['task']}")
+        print("-------------------------------\n")
+
+
 def saveTasks():
     """
     Save tasks to a file (tasks.txt).
@@ -130,6 +159,11 @@ def saveTasks():
     """
     with open("tasks.txt", "w") as file:
         for task_item in tasks:
+            file.write(f"{task_item['task']}|{task_item['priority']}\n")
+    
+    # Save completed tasks to a separate file
+    with open("completed_tasks.txt", "w") as file:
+        for task_item in completed:
             file.write(f"{task_item['task']}|{task_item['priority']}\n")
 
 
@@ -154,6 +188,21 @@ def loadTasks():
                 elif len(parts) == 1:
                     tasks.append({"task": parts[0], "priority": "Medium"})
     except FileNotFoundError:
+        pass
+    
+    # Load completed tasks
+    try:
+        with open("completed_tasks.txt", "r") as file:
+            for line in file:
+                parts = line.strip().split('|')
+                if len(parts) == 2:
+                    task, priority = parts
+                    completed.append({"task": task, "priority": priority})
+                elif len(parts) == 1:
+                    # Handle old format without priorities
+                    completed.append({"task": parts[0], "priority": "Medium"})
+    except FileNotFoundError:
+        # If file doesn't exist yet, ignore
         pass
 
 
@@ -264,7 +313,8 @@ def main():
         print("\n===============================")
         print("           TO DO APP")
         print("===============================")
-        print(f"  Total Tasks: {len(tasks)}")
+        print(f"  Pending Tasks: {len(tasks)}")
+        print(f"  Completed Tasks: {len(completed)}")
         
         high_priority = len([t for t in tasks if t['priority'] == 'High'])
         medium_priority = len([t for t in tasks if t['priority'] == 'Medium'])
@@ -275,13 +325,15 @@ def main():
         print(f"  Low Priority: {low_priority}")
         print("-------------------------------")
         print(" [1] Add Task")
-        print(" [2] Show Tasks")
+        print(" [2] Show Pending Tasks")
         print(" [3] Remove Task")
-        print(" [4] Clear All Tasks")
-        print(" [5] Search Tasks")
-        print(" [6] Export Tasks")
-        print(" [7] Import Tasks")
-        print(" [8] Exit")
+        print(" [4] Mark Task as Completed")
+        print(" [5] Show Completed Tasks")
+        print(" [6] Clear All Tasks")
+        print(" [7] Search Tasks")
+        print(" [8] Export Tasks")
+        print(" [9] Import Tasks")
+        print(" [0] Exit")
         print("-------------------------------")
         choice = input("Enter choice: ")
 
@@ -301,25 +353,33 @@ def main():
             saveTasks()
 
         elif choice == "4":
+            showTasks() # Show tasks before asking which to mark as completed
+            n = int(input("Enter task # to mark as completed: "))
+            markTaskCompleted(n)
+
+        elif choice == "5":
+            showCompletedTasks()
+
+        elif choice == "6":
             clearAllTasks()
             saveTasks()
         
-        elif choice == "5":
+        elif choice == "7":
             keyword = input("Enter keyword to search: ")
             searchTasks(keyword)
 
-        elif choice == "6":
+        elif choice == "8":
             exportTasks()
 
-        elif choice == "7":
+        elif choice == "9":
             importTasks()
 
-        elif choice == "8":
+        elif choice == "0":
             print("Goodbye!")
             break
 
         else:
-            print("Wrong choice! Please enter a number from 1-8.")
+            print("Wrong choice! Please enter a number from 0-9.")
 
 
 if __name__ == "__main__":
